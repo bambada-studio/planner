@@ -498,8 +498,8 @@ function renderGantt() {
         h += `<td class="g-meta" rowspan="${g.rows.length}">${g.title}</td>`;
         h += `<td class="g-meta" rowspan="${g.rows.length}">${g.svc}</td>`;
       }
-      h += `<td class="g-meta">${row.worker}</td>`;
-      h += `<td class="g-meta" style="font-size:10px">${row.type}</td>`;
+      h += `<td class="g-meta" style="cursor:pointer" onclick="showGanttDetail(${row.id})">${row.worker}</td>`;
+      h += `<td class="g-meta" style="font-size:10px;cursor:pointer" onclick="showGanttDetail(${row.id})">${row.type}</td>`;
 
       const sd = parseDate(row.startDate);
       const ed = parseDate(row.endDate);
@@ -540,6 +540,60 @@ function renderGantt() {
       wrap.scrollLeft = Math.max(0, (offset * 18) - 200);
     }, 50);
   }
+}
+
+// ── 간트 디테일 ──────────────────────────────────────────────
+let ganttDpId = null;
+
+function showGanttDetail(id) {
+  const it = ganttItems.find(i => i.id === id); if (!it) return;
+  ganttDpId = id;
+  document.getElementById('gd-title').textContent = it.title;
+  document.getElementById('gd-worker').textContent = '담당자: ' + it.worker;
+  document.getElementById('gd-type').textContent = '작업유형: ' + it.type;
+  document.getElementById('gd-period').textContent = '기간: ' + it.startDate + ' ~ ' + it.endDate;
+  document.getElementById('gd-memo').textContent = it.memo ? '메모: ' + it.memo : '';
+  const p = document.getElementById('gantt-detail');
+  p.classList.add('open');
+  p.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function closeGanttDetail() {
+  document.getElementById('gantt-detail').classList.remove('open');
+}
+
+function editGanttItem() {
+  if (ganttDpId === null) return;
+  const it = ganttItems.find(i => i.id === ganttDpId); if (!it) return;
+  const typeOpts = ['녹음','수정녹음','편집','대본','대본검수','편집검수','마스터링','배송']
+    .map(t => `<option value="${t}"${it.type===t?' selected':''}>${t}</option>`).join('');
+  const svcOpts = ['현물','스밍']
+    .map(s => `<option value="${s}"${it.svc===s?' selected':''}>${s}</option>`).join('');
+  modalMode = 'gantt-edit';
+  document.getElementById('modal-title').textContent = '제작 일정 수정';
+  document.getElementById('modal-save-btn').textContent = '저장';
+  document.getElementById('modal-body').innerHTML = `
+    <div class="fr"><label>작품명</label><input id="ge-title" value="${it.title}"></div>
+    <div class="fr"><label>총괄 연출자</label><input id="ge-dir" value="${it.dir||''}"></div>
+    <div class="fr"><label>서비스</label><select id="ge-svc">${svcOpts}</select></div>
+    <div class="fr"><label>작업 유형</label><select id="ge-type">${typeOpts}</select></div>
+    <div class="fr"><label>담당자</label><input id="ge-worker" value="${it.worker}"></div>
+    <div class="row2">
+      <div class="fr"><label>시작일</label><input id="ge-start" type="date" value="${it.startDate||''}"></div>
+      <div class="fr"><label>종료일</label><input id="ge-end" type="date" value="${it.endDate||''}"></div>
+    </div>
+    <div class="fr"><label>메모</label><input id="ge-note" value="${it.memo||''}"></div>`;
+  closeGanttDetail();
+  openModal();
+}
+
+async function deleteGanttItem() {
+  if (ganttDpId === null || !confirm('삭제할까요?')) return;
+  const deleteId = ganttDpId;
+  ganttDpId = null;
+  ganttItems = ganttItems.filter(i => i.id !== deleteId);
+  closeGanttDetail(); renderGantt(); renderWl();
+  if (API_URL) { await apiCall({action:'deleteProduction', id: deleteId}); setSyncStatus('ok','✓ 저장됨'); }
 }
 
 // ── 워크로드 ──────────────────────────────────────────────────
@@ -694,6 +748,33 @@ async function saveModal() {
       if (res.ok) { newItem.id = res.id; setSyncStatus('ok','✓ 저장됨'); }
     } else { newItem.id = Date.now(); }
     calItems.push(newItem); renderCal();
+
+  } else if (modalMode === 'gantt-edit') {
+    const title  = document.getElementById('ge-title').value.trim();
+    const dir    = document.getElementById('ge-dir').value.trim();
+    const svc    = document.getElementById('ge-svc').value;
+    const type   = document.getElementById('ge-type').value;
+    const worker = document.getElementById('ge-worker').value.trim();
+    const start  = document.getElementById('ge-start').value;
+    const end    = document.getElementById('ge-end').value;
+    const note   = document.getElementById('ge-note').value.trim();
+    if (!title || !worker || !start || !end) { alert('작품명, 담당자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
+    const editId = ganttDpId;
+    ganttDpId = null;
+    const idx = ganttItems.findIndex(i => i.id === editId);
+    if (idx !== -1) {
+      const updated = {...ganttItems[idx], title, dir, svc, type, worker, startDate:start, endDate:end, memo:note};
+      ganttItems[idx] = updated;
+      closeModal(); renderGantt(); renderWl();
+      if (API_URL) {
+        setSyncStatus('loading','저장 중...');
+        await apiCall({action:'deleteProduction', id: editId});
+        const res = await apiCall({action:'addProduction', title, dir, svc, type, worker, startDate:start, endDate:end, memo:note});
+        if (res.ok) ganttItems[idx].id = res.id;
+        setSyncStatus('ok','✓ 저장됨');
+      }
+    } else { closeModal(); }
+    btn.disabled=false; btn.textContent='저장'; return;
 
   } else {
     const title  = document.getElementById('gf-title').value.trim();
