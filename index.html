@@ -626,6 +626,10 @@ function showProdForm(m, cat) {
       <div class="fr"><label>시작일</label><input id="pf-start" type="date"></div>
       <div class="fr"><label>종료일</label><input id="pf-end" type="date"></div>
     </div>
+    <div class="fr"><label>색상</label><select id="pf-style">
+      <option value="red">빨강</option><option value="orange">주황</option><option value="yellow">노랑</option>
+      <option value="green">초록</option><option value="blue" selected>파랑</option><option value="navy">남색</option><option value="purple">보라</option>
+    </select></div>
     <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
   openModal();
 }
@@ -681,11 +685,12 @@ async function saveModal() {
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
     const note      = document.getElementById('pef-note').value.trim();
-    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
+    const style     = document.getElementById('pef-style').value;
+    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
     const editId = prodDpId; prodDpId = null;
     const idx = prodItems.findIndex(i => i.id === editId);
     if (idx !== -1) {
-      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, note};
+      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, note, style};
       prodItems[idx] = updated; closeModal(); renderProd(); renderWl();
       if (API_URL) {
         setSyncStatus('loading','저장 중...');
@@ -704,12 +709,13 @@ async function saveModal() {
     const startDate = document.getElementById('pf-start').value;
     const endDate   = document.getElementById('pf-end').value;
     const note      = document.getElementById('pf-note').value.trim();
-    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
-    const newItem = {title, worker, cat, year:prodYear, startDate, endDate, note};
+    const style     = document.getElementById('pf-style').value;
+    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
+    const newItem = {title, worker, cat, year:prodYear, startDate, endDate, note, style};
     closeModal();
     if (API_URL) {
       setSyncStatus('loading','저장 중...');
-      const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note});
+      const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note, style});
       if (res.ok) { newItem.id = res.id; setSyncStatus('ok','✓ 저장됨'); }
     } else { newItem.id = Date.now(); }
     prodItems.push(newItem); renderProd(); renderWl();
