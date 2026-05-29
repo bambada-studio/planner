@@ -27,6 +27,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-danger{color:#c0392b;border-color:#e0b0b0}
 .btn-danger:hover{background:#fff0f0}
 .btn-sm{padding:3px 9px;font-size:11px}
+
+/* ── 릴리즈 캘린더 ── */
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .year-nav{display:flex;align-items:center;gap:6px}
 .year-nav span{font-size:14px;font-weight:600;min-width:44px;text-align:center}
@@ -34,22 +36,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
 .leg-dot{width:9px;height:9px;border-radius:2px}
 .tbl-scroll{overflow-x:auto}
-table.cal{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
+table.cal{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
 .cal th{background:#f8f7f2;padding:7px 8px;font-weight:500;font-size:11px;text-align:center;border:1px solid #e8e7e0;white-space:nowrap}
-.cal th.h-record{color:#27500A;border-top:2px solid #639922}
-.cal th.h-release{color:#633806;border-top:2px solid #BA7517}
-.cal th.h-delivery{color:#0C447C;border-top:2px solid #378ADD}
-.cal th.h-event{color:#72243E;border-top:2px solid #D4537E}
+.cal th.h-record{color:#27500A;border-top:2px solid #639922;width:22%}
+.cal th.h-release{color:#633806;border-top:2px solid #BA7517;width:22%}
+.cal th.h-delivery{color:#0C447C;border-top:2px solid #378ADD;width:22%}
+.cal th.h-event{color:#72243E;border-top:2px solid #D4537E;width:22%}
 .cal td{border:1px solid #e8e7e0;padding:5px 6px;vertical-align:top}
 .cal td.m-cell{background:#f8f7f2;font-size:12px;font-weight:600;text-align:center;vertical-align:middle;width:40px;color:#444}
 .cal td.m-cell.now{color:#c0392b}
-.cal td.c-cell{min-width:180px;padding:5px 6px;vertical-align:top}.cal td.c-cell:hover{background:#fafaf7}
+.cal td.c-cell{padding:5px 6px;vertical-align:top;overflow:hidden}.cal td.c-cell:hover{background:#fafaf7}
 .chip{display:inline-flex;align-items:center;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500;margin:2px;cursor:pointer;border:1px solid transparent;white-space:nowrap;transition:opacity .15s}
 .chip:hover{opacity:.7}
-.chip-record{background:#EAF3DE;color:#27500A;border-color:#97C459}
-.chip-release{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.chip .dt{font-size:10px;font-weight:400;opacity:.75;margin-left:3px}
+.chip-record  {background:#EAF3DE;color:#27500A;border-color:#97C459}
+.chip-release {background:#FAEEDA;color:#633806;border-color:#EF9F27}
 .chip-delivery{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
-.chip-event{background:#FBEAF0;color:#72243E;border-color:#ED93B1}
+.chip-event   {background:#FBEAF0;color:#72243E;border-color:#ED93B1}
 .chip-red{background:#FCEBEB;color:#791F1F;border-color:#F09595}
 .chip-orange{background:#FAECE7;color:#712B13;border-color:#F0997B}
 .chip-yellow{background:#FAEEDA;color:#633806;border-color:#FAC775}
@@ -62,22 +65,28 @@ table.cal{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
 .cal-date{font-size:11px;color:#888;white-space:nowrap}
 .add-cell-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;background:transparent;border:1px dashed #ccc;color:#aaa;font-size:14px;cursor:pointer;transition:all .15s;vertical-align:middle;line-height:1}
 .add-cell-btn:hover{background:#f0efe8;border-color:#999;color:#555}
+
+/* ── 제작 현황 ── */
 table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
 .prod th{background:#f8f7f2;padding:7px 8px;font-weight:500;font-size:11px;text-align:center;border:1px solid #e8e7e0;white-space:nowrap}
-.prod th.h-script{color:#27500A;border-top:2px solid #639922;width:22%}
-.prod th.h-rec{color:#0C447C;border-top:2px solid #378ADD;width:22%}
-.prod th.h-review{color:#633806;border-top:2px solid #BA7517;width:22%}
-.prod th.h-media{color:#72243E;border-top:2px solid #D4537E;width:22%}
+.prod th.h-script {color:#27500A;border-top:2px solid #639922;width:22%}
+.prod th.h-rec    {color:#0C447C;border-top:2px solid #378ADD;width:22%}
+.prod th.h-review {color:#633806;border-top:2px solid #BA7517;width:22%}
+.prod th.h-media  {color:#72243E;border-top:2px solid #D4537E;width:22%}
 .prod td{border:1px solid #e8e7e0;padding:5px 6px;vertical-align:top}
 .prod td.pm-cell{background:#f8f7f2;font-size:12px;font-weight:600;text-align:center;vertical-align:middle;width:40px;color:#444}
 .prod td.pm-cell.now{color:#c0392b}
 .prod td.pc-cell{padding:5px 6px;vertical-align:top;overflow:hidden}
 .prod td.pc-cell:hover{background:#fafaf7}
-.pchip{display:flex;flex-direction:column;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:500;margin:2px 0;cursor:pointer;border:1px solid transparent;transition:opacity .15s;gap:1px;box-sizing:border-box}
+.pchip{display:flex;flex-direction:column;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:500;margin:4px 0;cursor:pointer;border:1px solid transparent;transition:opacity .15s;gap:1px;box-sizing:border-box}
 .pchip:hover{opacity:.75}
 .pchip-title{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pchip-sub{font-size:10px;font-weight:400;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pchip-note{font-size:10px;font-weight:400;opacity:.7;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 작품별 색상은 JS에서 inline style로 적용 */
+
+/* ── 워크로드 ── */
 .stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
 .stat-card{background:#f8f7f2;border-radius:8px;padding:12px}
 .stat-label{font-size:11px;color:#888;margin-bottom:4px}
@@ -90,8 +99,10 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
 .wl-fill{height:100%;border-radius:3px}
 .wl-sub{font-size:11px;color:#888}
 .wl-heavy{border-left:3px solid #c0392b;border-radius:0 10px 10px 0}
-.wl-mid{border-left:3px solid #e67e22;border-radius:0 10px 10px 0}
-.wl-low{border-left:3px solid #27ae60;border-radius:0 10px 10px 0}
+.wl-mid  {border-left:3px solid #e67e22;border-radius:0 10px 10px 0}
+.wl-low  {border-left:3px solid #27ae60;border-radius:0 10px 10px 0}
+
+/* ── 모달 ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-start;justify-content:center;padding-top:60px}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:12px;border:1px solid #e0dfd8;padding:22px;width:360px;max-width:94vw;max-height:90vh;overflow-y:auto}
@@ -133,12 +144,14 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
       <button class="btn btn-primary" onclick="openMainAdd()">+ 추가</button>
     </div>
   </div>
+
   <div class="tab-bar">
     <button class="tab active" onclick="switchTab('cal')">📅 릴리즈 캘린더</button>
     <button class="tab" onclick="switchTab('prod')">📋 제작 현황</button>
     <button class="tab" onclick="switchTab('wl')">👥 워크로드</button>
   </div>
 
+  <!-- 릴리즈 캘린더 -->
   <div class="view active" id="view-cal">
     <div class="card">
       <div class="cal-header">
@@ -178,6 +191,7 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
     </div>
   </div>
 
+  <!-- 제작 현황 -->
   <div class="view" id="view-prod">
     <div class="card">
       <div class="cal-header">
@@ -205,6 +219,7 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
     </div>
   </div>
 
+  <!-- 워크로드 -->
   <div class="view" id="view-wl">
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
@@ -221,6 +236,7 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
   </div>
 </div>
 
+<!-- 모달 -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <h3 id="modal-title">일정 추가</h3>
@@ -261,6 +277,7 @@ const CHIP_BASE = {record:'chip-record', release:'chip-release', delivery:'chip-
 const CATS = ['record','release','delivery','event'];
 const PROD_CATS = ['script','rec','review','media'];
 const PROD_CAT_LABEL = {script:'대본', rec:'편집', review:'검수', media:'마케팅'};
+
 
 let calItems = [], prodItems = [];
 let calYear = 2026, prodYear = 2026, wlYear = 2026, wlMonth = new Date().getMonth() + 1;
@@ -310,12 +327,7 @@ function changeWlM(d) {
   renderWl();
 }
 
-function parseDate(s) {
-  if (!s) return null;
-  const p = s.split('-');
-  return p.length === 3 ? new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2])) : null;
-}
-
+// ── 릴리즈 캘린더 ─────────────────────────────────────────────
 function chipClass(item) {
   return 'chip ' + (item.style ? 'chip-'+item.style : CHIP_BASE[item.cat]);
 }
@@ -335,11 +347,13 @@ function renderCal() {
   const cats = fcat ? [fcat] : CATS;
   const today = new Date(); const tm = today.getMonth()+1; const ty = today.getFullYear();
   document.getElementById('year-lbl').textContent = calYear;
+
   let h = '<thead><tr><th style="width:38px"></th>';
   cats.forEach(c => h += `<th class="h-${c}">${CAT_LABEL[c]}</th>`);
   h += '</tr><tr><th></th>';
   cats.forEach(() => h += '<th style="min-width:180px;font-size:10px;font-weight:400;color:#888">작품 · 일정</th>');
   h += '</tr></thead><tbody>';
+
   for (let m = 1; m <= 12; m++) {
     const isNow = m === tm && calYear === ty;
     h += `<tr><td class="m-cell${isNow?' now':''}">${m}월</td>`;
@@ -398,6 +412,8 @@ function editCalItem() {
   openModal();
 }
 
+// ── 제작 현황 ─────────────────────────────────────────────────
+// 작품별 색상 팔레트
 const TITLE_COLORS = [
   {bg:'#E6F1FB',border:'#85B7EB',text:'#0C447C'},
   {bg:'#EAF3DE',border:'#97C459',text:'#27500A'},
@@ -406,7 +422,7 @@ const TITLE_COLORS = [
   {bg:'#EEEDFE',border:'#AFA9EC',text:'#3C3489'},
   {bg:'#dce8f5',border:'#378ADD',text:'#042C53'},
   {bg:'#FAECE7',border:'#F0997B',text:'#712B13'},
-  {bg:'#f0f0e8',border:'#b0b090',text:'#3a3a20'},
+  {bg:'#EAF3DE',border:'#639922',text:'#1a3a05'},
 ];
 const titleColorMap = {};
 let titleColorIdx = 0;
@@ -421,15 +437,20 @@ function getTitleColor(title) {
 function renderProd() {
   const today = new Date(); const tm = today.getMonth()+1; const ty = today.getFullYear();
   document.getElementById('prod-year-lbl').textContent = prodYear;
+
+  // 색상 맵 초기화
   Object.keys(titleColorMap).forEach(k => delete titleColorMap[k]);
   titleColorIdx = 0;
+  // 작품명 정렬해서 일관된 색상 부여
   const allTitles = [...new Set(prodItems.map(i => i.title))].sort();
   allTitles.forEach(t => getTitleColor(t));
+
   let h = '<thead><tr><th style="width:38px"></th>';
   PROD_CATS.forEach(c => h += `<th class="h-${c}">${PROD_CAT_LABEL[c]}</th>`);
   h += '</tr><tr><th></th>';
-  PROD_CATS.forEach(() => h += '<th style="font-size:10px;font-weight:400;color:#888">작품 · 작업자 · 기간</th>');
+  PROD_CATS.forEach(() => h += '<th style="font-size:10px;font-weight:400;color:#888">작품 · 작업자 · 기간 · 상태</th>');
   h += '</tr></thead><tbody>';
+
   for (let m = 1; m <= 12; m++) {
     const isNow = m === tm && prodYear === ty;
     h += `<tr><td class="pm-cell${isNow?' now':''}">${m}월</td>`;
@@ -448,7 +469,6 @@ function renderProd() {
         h += `<div class="pchip" style="background:${col.bg};border-color:${col.border};color:${col.text}" onclick="showProdDetail(${it.id})">
           <span class="pchip-title">${it.title}</span>
           <span class="pchip-sub">${it.worker}${it.startDate&&it.endDate?' · '+fmtShort(it.startDate)+'~'+fmtShort(it.endDate):''}</span>
-          ${it.note?`<span class="pchip-note">${it.note}</span>`:''}
         </div>`;
       });
       h += `<button class="add-cell-btn" onclick="openProdCellAdd(${m},'${cat}')">+</button></td>`;
@@ -485,6 +505,7 @@ function editProdItem() {
   if (prodDpId === null) return;
   const it = prodItems.find(i => i.id === prodDpId); if (!it) return;
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${it.cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
+  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${it.month===(i+1)?' selected':''}>${l}</option>`).join('');
   modalMode = 'prod-edit';
   document.getElementById('modal-title').textContent = '제작 현황 수정';
   document.getElementById('modal-save-btn').textContent = '저장';
@@ -492,24 +513,33 @@ function editProdItem() {
     <div class="fr"><label>작품명</label><input id="pef-title" value="${it.title}"></div>
     <div class="fr"><label>작업자</label><input id="pef-worker" value="${it.worker||''}"></div>
     <div class="fr"><label>구분</label><select id="pef-cat">${catOpts}</select></div>
+    <div class="fr"><label>월</label><select id="pef-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pef-start" type="date" value="${it.startDate||''}"></div>
       <div class="fr"><label>종료일</label><input id="pef-end" type="date" value="${it.endDate||''}"></div>
     </div>
-    <div class="fr"><label>메모</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
+    <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
   closeProdDetail();
   openModal();
+}
+
+// ── 워크로드 ──────────────────────────────────────────────────
+function parseDate(s) {
+  if (!s) return null;
+  const p = s.split('-');
+  return p.length === 3 ? new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2])) : null;
 }
 
 function renderWl() {
   document.getElementById('wl-title').textContent = `${wlYear}년 ${wlMonth}월`;
   const mItems = prodItems.filter(t => {
     const sd = parseDate(t.startDate), ed = parseDate(t.endDate);
-    if (!sd || !ed) return false;
+    if (!sd || !ed) return t.month === wlMonth && (t.year === wlYear || !t.year);
     const mStart = new Date(wlYear, wlMonth-1, 1);
     const mEnd   = new Date(wlYear, wlMonth, 0);
     return sd <= mEnd && ed >= mStart;
   });
+
   const wMap = {};
   mItems.forEach(t => {
     if (!wMap[t.worker]) wMap[t.worker] = {cnt:0, cats:new Set(), works:[]};
@@ -517,16 +547,20 @@ function renderWl() {
     wMap[t.worker].cats.add(PROD_CAT_LABEL[t.cat]||t.cat);
     wMap[t.worker].works.push(t.title);
   });
+
   const total = mItems.length;
   const uniq  = Object.keys(wMap).length;
   const relCnt = calItems.filter(i => i.month === wlMonth).length;
+
   document.getElementById('wl-stats').innerHTML = `
     <div class="stat-card"><div class="stat-label">이번 달 전체 작업</div><div class="stat-val">${total}건</div></div>
     <div class="stat-card"><div class="stat-label">투입 담당자</div><div class="stat-val">${uniq}명</div></div>
     <div class="stat-card"><div class="stat-label">릴리즈 예정</div><div class="stat-val">${relCnt}건</div></div>
   `;
+
   const maxC = Math.max(1, ...Object.values(wMap).map(w => w.cnt));
   const sorted = Object.entries(wMap).sort((a,b) => b[1].cnt - a[1].cnt);
+
   if (!sorted.length) {
     document.getElementById('wl-grid').innerHTML = '<div class="no-data" style="grid-column:1/-1">이 달에 배정된 담당자가 없습니다</div>';
     return;
@@ -546,6 +580,7 @@ function renderWl() {
   }).join('');
 }
 
+// ── 모달 ──────────────────────────────────────────────────────
 function openMainAdd() {
   if (activeTab === 'cal') showCalForm(null, null);
   else if (activeTab === 'prod') showProdForm(null, null);
@@ -580,16 +615,18 @@ function showProdForm(m, cat) {
   modalMode = 'prod';
   document.getElementById('modal-title').textContent = '제작 현황 추가';
   document.getElementById('modal-save-btn').textContent = '추가';
+  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${m===(i+1)?' selected':''}>${l}</option>`).join('');
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
   document.getElementById('modal-body').innerHTML = `
     <div class="fr"><label>작품명</label><input id="pf-title" placeholder="예: 혼불5"></div>
     <div class="fr"><label>작업자</label><input id="pf-worker" placeholder="예: 류기화"></div>
     <div class="fr"><label>구분</label><select id="pf-cat">${catOpts}</select></div>
+    <div class="fr"><label>월</label><select id="pf-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pf-start" type="date"></div>
       <div class="fr"><label>종료일</label><input id="pf-end" type="date"></div>
     </div>
-    <div class="fr"><label>메모</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
+    <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
   openModal();
 }
 
@@ -641,10 +678,11 @@ async function saveModal() {
     const title     = document.getElementById('pef-title').value.trim();
     const worker    = document.getElementById('pef-worker').value.trim();
     const cat       = document.getElementById('pef-cat').value;
+    const month     = parseInt(document.getElementById('pef-month').value);
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
     const note      = document.getElementById('pef-note').value.trim();
-    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
+    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
     const editId = prodDpId; prodDpId = null;
     const idx = prodItems.findIndex(i => i.id === editId);
     if (idx !== -1) {
@@ -664,10 +702,11 @@ async function saveModal() {
     const title     = document.getElementById('pf-title').value.trim();
     const worker    = document.getElementById('pf-worker').value.trim();
     const cat       = document.getElementById('pf-cat').value;
+    const month     = parseInt(document.getElementById('pf-month').value);
     const startDate = document.getElementById('pf-start').value;
     const endDate   = document.getElementById('pf-end').value;
     const note      = document.getElementById('pf-note').value.trim();
-    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
+    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
     const newItem = {title, worker, cat, year:prodYear, startDate, endDate, note};
     closeModal();
     if (API_URL) {
@@ -681,6 +720,7 @@ async function saveModal() {
   btn.disabled = false; btn.textContent = '추가';
 }
 
+// 초기 로드
 if (API_URL) loadAll();
 else { setSyncStatus('err','URL 미설정'); renderCal(); renderProd(); renderWl(); }
 </script>
