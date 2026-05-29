@@ -62,30 +62,22 @@ table.cal{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
 .cal-date{font-size:11px;color:#888;white-space:nowrap}
 .add-cell-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;background:transparent;border:1px dashed #ccc;color:#aaa;font-size:14px;cursor:pointer;transition:all .15s;vertical-align:middle;line-height:1}
 .add-cell-btn:hover{background:#f0efe8;border-color:#999;color:#555}
-table.prod{border-collapse:collapse;width:100%;min-width:700px;font-size:12px}
+table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
 .prod th{background:#f8f7f2;padding:7px 8px;font-weight:500;font-size:11px;text-align:center;border:1px solid #e8e7e0;white-space:nowrap}
-.prod th.h-script{color:#27500A;border-top:2px solid #639922}
-.prod th.h-rec{color:#0C447C;border-top:2px solid #378ADD}
-.prod th.h-review{color:#633806;border-top:2px solid #BA7517}
-.prod th.h-media{color:#72243E;border-top:2px solid #D4537E}
+.prod th.h-script{color:#27500A;border-top:2px solid #639922;width:22%}
+.prod th.h-rec{color:#0C447C;border-top:2px solid #378ADD;width:22%}
+.prod th.h-review{color:#633806;border-top:2px solid #BA7517;width:22%}
+.prod th.h-media{color:#72243E;border-top:2px solid #D4537E;width:22%}
 .prod td{border:1px solid #e8e7e0;padding:5px 6px;vertical-align:top}
 .prod td.pm-cell{background:#f8f7f2;font-size:12px;font-weight:600;text-align:center;vertical-align:middle;width:40px;color:#444}
 .prod td.pm-cell.now{color:#c0392b}
-.prod td.pc-cell{min-width:160px;padding:5px 6px;vertical-align:top}
+.prod td.pc-cell{padding:5px 6px;vertical-align:top;overflow:hidden}
 .prod td.pc-cell:hover{background:#fafaf7}
-.pchip{display:inline-flex;flex-direction:column;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:500;margin:2px;cursor:pointer;border:1px solid transparent;transition:opacity .15s;gap:1px}
+.pchip{display:flex;flex-direction:column;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:500;margin:2px 0;cursor:pointer;border:1px solid transparent;transition:opacity .15s;gap:1px;box-sizing:border-box}
 .pchip:hover{opacity:.75}
-.pchip-title{font-size:11px;font-weight:600}
-.pchip-sub{font-size:10px;font-weight:400;opacity:.8}
-.pchip-note{font-size:10px;font-weight:400;opacity:.7;font-style:italic}
-.badge-status{display:inline-flex;align-items:center;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:600;margin-top:2px;width:fit-content}
-.badge-plan{background:#f0efe8;color:#666}
-.badge-ing{background:#FAEEDA;color:#633806}
-.badge-done{background:#EAF3DE;color:#27500A}
-.pchip-script{background:#EAF3DE;border-color:#97C459}
-.pchip-rec{background:#E6F1FB;border-color:#85B7EB}
-.pchip-review{background:#FAEEDA;border-color:#EF9F27}
-.pchip-media{background:#FBEAF0;border-color:#ED93B1}
+.pchip-title{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pchip-sub{font-size:10px;font-weight:400;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pchip-note{font-size:10px;font-weight:400;opacity:.7;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
 .stat-card{background:#f8f7f2;border-radius:8px;padding:12px}
 .stat-label{font-size:11px;color:#888;margin-bottom:4px}
@@ -204,7 +196,6 @@ table.prod{border-collapse:collapse;width:100%;min-width:700px;font-size:12px}
         <div class="dp-row" id="pd-worker"></div>
         <div class="dp-row" id="pd-cat"></div>
         <div class="dp-row" id="pd-period"></div>
-        <div class="dp-row" id="pd-status"></div>
         <div class="dp-row" id="pd-note"></div>
         <div style="display:flex;gap:6px;margin-top:8px">
           <button class="btn btn-sm" onclick="editProdItem()">수정</button>
@@ -269,8 +260,7 @@ const CAT_LABEL = {record:'녹음', release:'발표(커밍순)', delivery:'배�
 const CHIP_BASE = {record:'chip-record', release:'chip-release', delivery:'chip-delivery', event:'chip-event'};
 const CATS = ['record','release','delivery','event'];
 const PROD_CATS = ['script','rec','review','media'];
-const PROD_CAT_LABEL = {script:'대본', rec:'편집', review:'검수', media:'영상'};
-const STATUS_LIST = ['예정','진행 중','완료'];
+const PROD_CAT_LABEL = {script:'대본', rec:'편집', review:'검수', media:'마케팅'};
 
 let calItems = [], prodItems = [];
 let calYear = 2026, prodYear = 2026, wlYear = 2026, wlMonth = new Date().getMonth() + 1;
@@ -408,13 +398,37 @@ function editCalItem() {
   openModal();
 }
 
+const TITLE_COLORS = [
+  {bg:'#E6F1FB',border:'#85B7EB',text:'#0C447C'},
+  {bg:'#EAF3DE',border:'#97C459',text:'#27500A'},
+  {bg:'#FAEEDA',border:'#EF9F27',text:'#633806'},
+  {bg:'#FBEAF0',border:'#ED93B1',text:'#72243E'},
+  {bg:'#EEEDFE',border:'#AFA9EC',text:'#3C3489'},
+  {bg:'#dce8f5',border:'#378ADD',text:'#042C53'},
+  {bg:'#FAECE7',border:'#F0997B',text:'#712B13'},
+  {bg:'#f0f0e8',border:'#b0b090',text:'#3a3a20'},
+];
+const titleColorMap = {};
+let titleColorIdx = 0;
+function getTitleColor(title) {
+  if (!titleColorMap[title]) {
+    titleColorMap[title] = TITLE_COLORS[titleColorIdx % TITLE_COLORS.length];
+    titleColorIdx++;
+  }
+  return titleColorMap[title];
+}
+
 function renderProd() {
   const today = new Date(); const tm = today.getMonth()+1; const ty = today.getFullYear();
   document.getElementById('prod-year-lbl').textContent = prodYear;
+  Object.keys(titleColorMap).forEach(k => delete titleColorMap[k]);
+  titleColorIdx = 0;
+  const allTitles = [...new Set(prodItems.map(i => i.title))].sort();
+  allTitles.forEach(t => getTitleColor(t));
   let h = '<thead><tr><th style="width:38px"></th>';
   PROD_CATS.forEach(c => h += `<th class="h-${c}">${PROD_CAT_LABEL[c]}</th>`);
   h += '</tr><tr><th></th>';
-  PROD_CATS.forEach(() => h += '<th style="min-width:160px;font-size:10px;font-weight:400;color:#888">작품 · 작업자 · 기간 · 상태</th>');
+  PROD_CATS.forEach(() => h += '<th style="font-size:10px;font-weight:400;color:#888">작품 · 작업자 · 기간</th>');
   h += '</tr></thead><tbody>';
   for (let m = 1; m <= 12; m++) {
     const isNow = m === tm && prodYear === ty;
@@ -430,13 +444,11 @@ function renderProd() {
       });
       h += `<td class="pc-cell">`;
       its.forEach(it => {
-        const cls = `pchip pchip-${it.cat}`;
-        const badgeCls = it.status === '완료' ? 'badge-done' : it.status === '진행 중' ? 'badge-ing' : 'badge-plan';
-        h += `<div class="${cls}" onclick="showProdDetail(${it.id})">
+        const col = getTitleColor(it.title);
+        h += `<div class="pchip" style="background:${col.bg};border-color:${col.border};color:${col.text}" onclick="showProdDetail(${it.id})">
           <span class="pchip-title">${it.title}</span>
           <span class="pchip-sub">${it.worker}${it.startDate&&it.endDate?' · '+fmtShort(it.startDate)+'~'+fmtShort(it.endDate):''}</span>
           ${it.note?`<span class="pchip-note">${it.note}</span>`:''}
-          <span class="badge-status ${badgeCls}">${it.status||'예정'}</span>
         </div>`;
       });
       h += `<button class="add-cell-btn" onclick="openProdCellAdd(${m},'${cat}')">+</button></td>`;
@@ -454,7 +466,6 @@ function showProdDetail(id) {
   document.getElementById('pd-worker').textContent = '작업자: ' + (it.worker||'');
   document.getElementById('pd-cat').textContent = '구분: ' + PROD_CAT_LABEL[it.cat];
   document.getElementById('pd-period').textContent = it.startDate && it.endDate ? '기간: '+fmtDate(it.startDate)+' ~ '+fmtDate(it.endDate) : '';
-  document.getElementById('pd-status').textContent = '상태: ' + (it.status||'예정');
   document.getElementById('pd-note').textContent = it.note ? '메모: '+it.note : '';
   const p = document.getElementById('prod-detail');
   p.classList.add('open');
@@ -474,7 +485,6 @@ function editProdItem() {
   if (prodDpId === null) return;
   const it = prodItems.find(i => i.id === prodDpId); if (!it) return;
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${it.cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
-  const statusOpts = STATUS_LIST.map(s => `<option value="${s}"${it.status===s?' selected':''}>${s}</option>`).join('');
   modalMode = 'prod-edit';
   document.getElementById('modal-title').textContent = '제작 현황 수정';
   document.getElementById('modal-save-btn').textContent = '저장';
@@ -486,8 +496,7 @@ function editProdItem() {
       <div class="fr"><label>시작일</label><input id="pef-start" type="date" value="${it.startDate||''}"></div>
       <div class="fr"><label>종료일</label><input id="pef-end" type="date" value="${it.endDate||''}"></div>
     </div>
-    <div class="fr"><label>진행 상황</label><select id="pef-status">${statusOpts}</select></div>
-    <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
+    <div class="fr"><label>메모</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
   closeProdDetail();
   openModal();
 }
@@ -572,7 +581,6 @@ function showProdForm(m, cat) {
   document.getElementById('modal-title').textContent = '제작 현황 추가';
   document.getElementById('modal-save-btn').textContent = '추가';
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
-  const statusOpts = STATUS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
   document.getElementById('modal-body').innerHTML = `
     <div class="fr"><label>작품명</label><input id="pf-title" placeholder="예: 혼불5"></div>
     <div class="fr"><label>작업자</label><input id="pf-worker" placeholder="예: 류기화"></div>
@@ -581,8 +589,7 @@ function showProdForm(m, cat) {
       <div class="fr"><label>시작일</label><input id="pf-start" type="date"></div>
       <div class="fr"><label>종료일</label><input id="pf-end" type="date"></div>
     </div>
-    <div class="fr"><label>진행 상황</label><select id="pf-status">${statusOpts}</select></div>
-    <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
+    <div class="fr"><label>메모</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
   openModal();
 }
 
@@ -636,18 +643,17 @@ async function saveModal() {
     const cat       = document.getElementById('pef-cat').value;
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
-    const status    = document.getElementById('pef-status').value;
     const note      = document.getElementById('pef-note').value.trim();
     if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
     const editId = prodDpId; prodDpId = null;
     const idx = prodItems.findIndex(i => i.id === editId);
     if (idx !== -1) {
-      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, status, note};
+      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, note};
       prodItems[idx] = updated; closeModal(); renderProd(); renderWl();
       if (API_URL) {
         setSyncStatus('loading','저장 중...');
         await apiCall({action:'deleteProd', id:editId});
-        const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, status, note});
+        const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note});
         if (res.ok) prodItems[idx].id = res.id;
         setSyncStatus('ok','✓ 저장됨');
       }
@@ -660,14 +666,13 @@ async function saveModal() {
     const cat       = document.getElementById('pf-cat').value;
     const startDate = document.getElementById('pf-start').value;
     const endDate   = document.getElementById('pf-end').value;
-    const status    = document.getElementById('pf-status').value;
     const note      = document.getElementById('pf-note').value.trim();
     if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
-    const newItem = {title, worker, cat, year:prodYear, startDate, endDate, status, note};
+    const newItem = {title, worker, cat, year:prodYear, startDate, endDate, note};
     closeModal();
     if (API_URL) {
       setSyncStatus('loading','저장 중...');
-      const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, status, note});
+      const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note});
       if (res.ok) { newItem.id = res.id; setSyncStatus('ok','✓ 저장됨'); }
     } else { newItem.id = Date.now(); }
     prodItems.push(newItem); renderProd(); renderWl();
