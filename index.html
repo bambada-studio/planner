@@ -46,7 +46,6 @@ table.cal{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
 .cal td.c-cell{min-width:180px;padding:5px 6px;vertical-align:top}.cal td.c-cell:hover{background:#fafaf7}
 .chip{display:inline-flex;align-items:center;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:500;margin:2px;cursor:pointer;border:1px solid transparent;white-space:nowrap;transition:opacity .15s}
 .chip:hover{opacity:.7}
-.chip .dt{font-size:10px;font-weight:400;opacity:.75;margin-left:3px}
 .chip-record{background:#EAF3DE;color:#27500A;border-color:#97C459}
 .chip-release{background:#FAEEDA;color:#633806;border-color:#EF9F27}
 .chip-delivery{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
@@ -142,7 +141,6 @@ table.prod{border-collapse:collapse;width:100%;min-width:700px;font-size:12px}
       <button class="btn btn-primary" onclick="openMainAdd()">+ 추가</button>
     </div>
   </div>
-
   <div class="tab-bar">
     <button class="tab active" onclick="switchTab('cal')">📅 릴리즈 캘린더</button>
     <button class="tab" onclick="switchTab('prod')">📋 제작 현황</button>
@@ -322,6 +320,12 @@ function changeWlM(d) {
   renderWl();
 }
 
+function parseDate(s) {
+  if (!s) return null;
+  const p = s.split('-');
+  return p.length === 3 ? new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2])) : null;
+}
+
 function chipClass(item) {
   return 'chip ' + (item.style ? 'chip-'+item.style : CHIP_BASE[item.cat]);
 }
@@ -416,7 +420,14 @@ function renderProd() {
     const isNow = m === tm && prodYear === ty;
     h += `<tr><td class="pm-cell${isNow?' now':''}">${m}월</td>`;
     PROD_CATS.forEach(cat => {
-      const its = prodItems.filter(i => i.month === m && i.cat === cat && (i.year === prodYear || !i.year));
+      const mStart = new Date(prodYear, m-1, 1);
+      const mEnd   = new Date(prodYear, m, 0);
+      const its = prodItems.filter(i => {
+        if (i.cat !== cat) return false;
+        const sd = parseDate(i.startDate), ed = parseDate(i.endDate);
+        if (sd && ed) return sd <= mEnd && ed >= mStart;
+        return false;
+      });
       h += `<td class="pc-cell">`;
       its.forEach(it => {
         const cls = `pchip pchip-${it.cat}`;
@@ -464,7 +475,6 @@ function editProdItem() {
   const it = prodItems.find(i => i.id === prodDpId); if (!it) return;
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${it.cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
   const statusOpts = STATUS_LIST.map(s => `<option value="${s}"${it.status===s?' selected':''}>${s}</option>`).join('');
-  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${it.month===(i+1)?' selected':''}>${l}</option>`).join('');
   modalMode = 'prod-edit';
   document.getElementById('modal-title').textContent = '제작 현황 수정';
   document.getElementById('modal-save-btn').textContent = '저장';
@@ -472,7 +482,6 @@ function editProdItem() {
     <div class="fr"><label>작품명</label><input id="pef-title" value="${it.title}"></div>
     <div class="fr"><label>작업자</label><input id="pef-worker" value="${it.worker||''}"></div>
     <div class="fr"><label>구분</label><select id="pef-cat">${catOpts}</select></div>
-    <div class="fr"><label>월</label><select id="pef-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pef-start" type="date" value="${it.startDate||''}"></div>
       <div class="fr"><label>종료일</label><input id="pef-end" type="date" value="${it.endDate||''}"></div>
@@ -483,17 +492,11 @@ function editProdItem() {
   openModal();
 }
 
-function parseDate(s) {
-  if (!s) return null;
-  const p = s.split('-');
-  return p.length === 3 ? new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2])) : null;
-}
-
 function renderWl() {
   document.getElementById('wl-title').textContent = `${wlYear}년 ${wlMonth}월`;
   const mItems = prodItems.filter(t => {
     const sd = parseDate(t.startDate), ed = parseDate(t.endDate);
-    if (!sd || !ed) return t.month === wlMonth && (t.year === wlYear || !t.year);
+    if (!sd || !ed) return false;
     const mStart = new Date(wlYear, wlMonth-1, 1);
     const mEnd   = new Date(wlYear, wlMonth, 0);
     return sd <= mEnd && ed >= mStart;
@@ -568,14 +571,12 @@ function showProdForm(m, cat) {
   modalMode = 'prod';
   document.getElementById('modal-title').textContent = '제작 현황 추가';
   document.getElementById('modal-save-btn').textContent = '추가';
-  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${m===(i+1)?' selected':''}>${l}</option>`).join('');
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
   const statusOpts = STATUS_LIST.map(s => `<option value="${s}">${s}</option>`).join('');
   document.getElementById('modal-body').innerHTML = `
     <div class="fr"><label>작품명</label><input id="pf-title" placeholder="예: 혼불5"></div>
     <div class="fr"><label>작업자</label><input id="pf-worker" placeholder="예: 류기화"></div>
     <div class="fr"><label>구분</label><select id="pf-cat">${catOpts}</select></div>
-    <div class="fr"><label>월</label><select id="pf-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pf-start" type="date"></div>
       <div class="fr"><label>종료일</label><input id="pf-end" type="date"></div>
@@ -633,21 +634,20 @@ async function saveModal() {
     const title     = document.getElementById('pef-title').value.trim();
     const worker    = document.getElementById('pef-worker').value.trim();
     const cat       = document.getElementById('pef-cat').value;
-    const month     = parseInt(document.getElementById('pef-month').value);
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
     const status    = document.getElementById('pef-status').value;
     const note      = document.getElementById('pef-note').value.trim();
-    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
+    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
     const editId = prodDpId; prodDpId = null;
     const idx = prodItems.findIndex(i => i.id === editId);
     if (idx !== -1) {
-      const updated = {...prodItems[idx], title, worker, cat, month, year:prodYear, startDate, endDate, status, note};
+      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, status, note};
       prodItems[idx] = updated; closeModal(); renderProd(); renderWl();
       if (API_URL) {
         setSyncStatus('loading','저장 중...');
         await apiCall({action:'deleteProd', id:editId});
-        const res = await apiCall({action:'addProd', title, worker, cat, month, year:prodYear, startDate, endDate, status, note});
+        const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, status, note});
         if (res.ok) prodItems[idx].id = res.id;
         setSyncStatus('ok','✓ 저장됨');
       }
@@ -658,17 +658,16 @@ async function saveModal() {
     const title     = document.getElementById('pf-title').value.trim();
     const worker    = document.getElementById('pf-worker').value.trim();
     const cat       = document.getElementById('pf-cat').value;
-    const month     = parseInt(document.getElementById('pf-month').value);
     const startDate = document.getElementById('pf-start').value;
     const endDate   = document.getElementById('pf-end').value;
     const status    = document.getElementById('pf-status').value;
     const note      = document.getElementById('pf-note').value.trim();
-    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
-    const newItem = {title, worker, cat, month, year:prodYear, startDate, endDate, status, note};
+    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='추가'; return; }
+    const newItem = {title, worker, cat, year:prodYear, startDate, endDate, status, note};
     closeModal();
     if (API_URL) {
       setSyncStatus('loading','저장 중...');
-      const res = await apiCall({action:'addProd', title, worker, cat, month, year:prodYear, startDate, endDate, status, note});
+      const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, status, note});
       if (res.ok) { newItem.id = res.id; setSyncStatus('ok','✓ 저장됨'); }
     } else { newItem.id = Date.now(); }
     prodItems.push(newItem); renderProd(); renderWl();
