@@ -500,7 +500,6 @@ function editProdItem() {
   if (prodDpId === null) return;
   const it = prodItems.find(i => i.id === prodDpId); if (!it) return;
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${it.cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
-  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${it.month===(i+1)?' selected':''}>${l}</option>`).join('');
   modalMode = 'prod-edit';
   document.getElementById('modal-title').textContent = '제작 현황 수정';
   document.getElementById('modal-save-btn').textContent = '저장';
@@ -508,7 +507,6 @@ function editProdItem() {
     <div class="fr"><label>작품명</label><input id="pef-title" value="${it.title}"></div>
     <div class="fr"><label>작업자</label><input id="pef-worker" value="${it.worker||''}"></div>
     <div class="fr"><label>구분</label><select id="pef-cat">${catOpts}</select></div>
-    <div class="fr"><label>월</label><select id="pef-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pef-start" type="date" value="${it.startDate||''}"></div>
       <div class="fr"><label>종료일</label><input id="pef-end" type="date" value="${it.endDate||''}"></div>
@@ -619,13 +617,11 @@ function showProdForm(m, cat) {
   modalMode = 'prod';
   document.getElementById('modal-title').textContent = '제작 현황 추가';
   document.getElementById('modal-save-btn').textContent = '추가';
-  const moOpts = MOS.map((l,i) => `<option value="${i+1}"${m===(i+1)?' selected':''}>${l}</option>`).join('');
   const catOpts = PROD_CATS.map(c => `<option value="${c}"${cat===c?' selected':''}>${PROD_CAT_LABEL[c]}</option>`).join('');
   document.getElementById('modal-body').innerHTML = `
     <div class="fr"><label>작품명</label><input id="pf-title" placeholder="예: 혼불5"></div>
     <div class="fr"><label>작업자</label><input id="pf-worker" placeholder="예: 류기화"></div>
     <div class="fr"><label>구분</label><select id="pf-cat">${catOpts}</select></div>
-    <div class="fr"><label>월</label><select id="pf-month">${moOpts}</select></div>
     <div class="row2">
       <div class="fr"><label>시작일</label><input id="pf-start" type="date"></div>
       <div class="fr"><label>종료일</label><input id="pf-end" type="date"></div>
@@ -682,7 +678,6 @@ async function saveModal() {
     const title     = document.getElementById('pef-title').value.trim();
     const worker    = document.getElementById('pef-worker').value.trim();
     const cat       = document.getElementById('pef-cat').value;
-    const month     = parseInt(document.getElementById('pef-month').value);
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
     const note      = document.getElementById('pef-note').value.trim();
@@ -706,7 +701,6 @@ async function saveModal() {
     const title     = document.getElementById('pf-title').value.trim();
     const worker    = document.getElementById('pf-worker').value.trim();
     const cat       = document.getElementById('pf-cat').value;
-    const month     = parseInt(document.getElementById('pf-month').value);
     const startDate = document.getElementById('pf-start').value;
     const endDate   = document.getElementById('pf-end').value;
     const note      = document.getElementById('pf-note').value.trim();
