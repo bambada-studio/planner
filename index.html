@@ -61,7 +61,6 @@ table.cal{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
 .chip-navy{background:#dce8f5;color:#042C53;border-color:#378ADD}
 .chip-purple{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
 
-
 .cal-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 0;cursor:pointer;border-radius:4px}
 .cal-row:hover{opacity:.75}
 .cal-date{font-size:11px;color:#888;white-space:nowrap}
@@ -472,10 +471,8 @@ function renderGantt() {
   const today = new Date();
   const todayY = today.getFullYear(), todayM = today.getMonth()+1, todayD = today.getDate();
 
-  // 표시할 월 범위 결정
   let minM = 1, maxM = 12;
 
-  // 헤더: 월 + 일
   let h = '<table class="gantt"><thead>';
   h += '<tr><th rowspan="2" style="min-width:80px">작품</th><th rowspan="2" style="min-width:60px">서비스</th><th rowspan="2" style="min-width:60px">담당자</th><th rowspan="2" style="min-width:60px">작업</th>';
   for (let m = minM; m <= maxM; m++) {
@@ -495,7 +492,6 @@ function renderGantt() {
   }
   h += '</tr></thead><tbody>';
 
-  // 작품별 그룹
   const groups = {};
   items.forEach(t => {
     const k = t.title + '|' + t.svc;
@@ -531,7 +527,7 @@ function renderGantt() {
           if (inRange) {
             const typeClass = 'type-' + row.type;
             const lbl = isFirst ? row.type : '';
-            h += `<div class="gbar ${typeClass}" title="${row.title} - ${row.type}">${lbl}</div>`;
+            h += `<div class="gbar ${typeClass}" title="${row.title} - ${row.type}" onclick="showGanttDetail(${row.id})">${lbl}</div>`;
           }
           h += '</td>';
         }
@@ -544,7 +540,6 @@ function renderGantt() {
   h += '</tbody></table>';
   document.getElementById('gantt-container').innerHTML = h;
 
-  // 오늘 날짜로 스크롤
   if (year === todayY) {
     setTimeout(() => {
       const wrap = document.getElementById('gantt-container');
