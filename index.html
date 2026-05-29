@@ -277,6 +277,8 @@ const CHIP_BASE = {record:'chip-record', release:'chip-release', delivery:'chip-
 const CATS = ['record','release','delivery','event'];
 const PROD_CATS = ['script','rec','review','media'];
 const PROD_CAT_LABEL = {script:'대본', rec:'편집', review:'검수', media:'마케팅'};
+const PROD_COLORS = {red:{bg:'#FCEBEB',border:'#F09595',text:'#791F1F'},orange:{bg:'#FAECE7',border:'#F0997B',text:'#712B13'},yellow:{bg:'#FAEEDA',border:'#FAC775',text:'#633806'},green:{bg:'#EAF3DE',border:'#97C459',text:'#27500A'},blue:{bg:'#E6F1FB',border:'#85B7EB',text:'#0C447C'},navy:{bg:'#dce8f5',border:'#378ADD',text:'#042C53'},purple:{bg:'#EEEDFE',border:'#AFA9EC',text:'#3C3489'}};
+function getProdColor(style){return PROD_COLORS[style]||PROD_COLORS['blue'];}
 
 
 let calItems = [], prodItems = [];
@@ -438,13 +440,6 @@ function renderProd() {
   const today = new Date(); const tm = today.getMonth()+1; const ty = today.getFullYear();
   document.getElementById('prod-year-lbl').textContent = prodYear;
 
-  // 색상 맵 초기화
-  Object.keys(titleColorMap).forEach(k => delete titleColorMap[k]);
-  titleColorIdx = 0;
-  // 작품명 정렬해서 일관된 색상 부여
-  const allTitles = [...new Set(prodItems.map(i => i.title))].sort();
-  allTitles.forEach(t => getTitleColor(t));
-
   let h = '<thead><tr><th style="width:38px"></th>';
   PROD_CATS.forEach(c => h += `<th class="h-${c}">${PROD_CAT_LABEL[c]}</th>`);
   h += '</tr><tr><th></th>';
@@ -465,7 +460,7 @@ function renderProd() {
       });
       h += `<td class="pc-cell">`;
       its.forEach(it => {
-        const col = getTitleColor(it.title);
+        const col = getProdColor(it.style);
         h += `<div class="pchip" style="background:${col.bg};border-color:${col.border};color:${col.text}" onclick="showProdDetail(${it.id})">
           <span class="pchip-title">${it.title}</span>
           <span class="pchip-sub">${it.worker}${it.startDate&&it.endDate?' · '+fmtShort(it.startDate)+'~'+fmtShort(it.endDate):''}</span>
@@ -518,6 +513,15 @@ function editProdItem() {
       <div class="fr"><label>시작일</label><input id="pef-start" type="date" value="${it.startDate||''}"></div>
       <div class="fr"><label>종료일</label><input id="pef-end" type="date" value="${it.endDate||''}"></div>
     </div>
+    <div class="fr"><label>색상</label><select id="pef-style">
+      <option value="red"${it.style==='red'?' selected':''}>빨강</option>
+      <option value="orange"${it.style==='orange'?' selected':''}>주황</option>
+      <option value="yellow"${it.style==='yellow'?' selected':''}>노랑</option>
+      <option value="green"${it.style==='green'?' selected':''}>초록</option>
+      <option value="blue"${it.style==='blue'?' selected':''}>파랑</option>
+      <option value="navy"${it.style==='navy'?' selected':''}>남색</option>
+      <option value="purple"${it.style==='purple'?' selected':''}>보라</option>
+    </select></div>
     <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
   closeProdDetail();
   openModal();
@@ -691,7 +695,7 @@ async function saveModal() {
       if (API_URL) {
         setSyncStatus('loading','저장 중...');
         await apiCall({action:'deleteProd', id:editId});
-        const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note});
+        const res = await apiCall({action:'addProd', title, worker, cat, year:prodYear, startDate, endDate, note, style});
         if (res.ok) prodItems[idx].id = res.id;
         setSyncStatus('ok','✓ 저장됨');
       }
