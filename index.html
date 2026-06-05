@@ -250,7 +250,7 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
 
 <script>
 const API_URL_KEY = 'planner_v2_api_url';
-let API_URL = localStorage.getItem(API_URL_KEY) || 'https://script.google.com/macros/s/AKfycbx5cYgSYTjsr27bKxMUTzO3c4GT7h3mzgwYadAORvQ9ITZFISjxu1b5FFuZy0wKq0q5/exec';
+let API_URL = localStorage.getItem(API_URL_KEY) || 'https://script.google.com/macros/s/AKfycbzzYG6im63gKpr_Zn8c3F1IHW-nl5mLDYB5u2SJvv78qqenNS-iKek3-i7c7_BiNvAP/exec';
 if (API_URL) {
   document.getElementById('setup-banner').style.display = 'none';
   document.getElementById('api-url-input').value = API_URL;
@@ -457,6 +457,10 @@ function renderProd() {
         const sd = parseDate(i.startDate), ed = parseDate(i.endDate);
         if (sd && ed) return sd <= mEnd && ed >= mStart;
         return false;
+      }).sort((a, b) => {
+        const sa = parseDate(a.startDate), sb = parseDate(b.startDate);
+        if (sa && sb) return sa - sb;
+        return 0;
       });
       h += `<td class="pc-cell">`;
       its.forEach(it => {
@@ -685,12 +689,11 @@ async function saveModal() {
     const startDate = document.getElementById('pef-start').value;
     const endDate   = document.getElementById('pef-end').value;
     const note      = document.getElementById('pef-note').value.trim();
-    const style     = document.getElementById('pef-style').value;
-    if (!title || !worker || !startDate || !endDate) { alert('작품명, 작업자, 시작일, 종료일을 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
+    if (!title || !worker) { alert('작품명과 작업자를 입력해주세요'); btn.disabled=false; btn.textContent='저장'; return; }
     const editId = prodDpId; prodDpId = null;
     const idx = prodItems.findIndex(i => i.id === editId);
     if (idx !== -1) {
-      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, note, style};
+      const updated = {...prodItems[idx], title, worker, cat, year:prodYear, startDate, endDate, note};
       prodItems[idx] = updated; closeModal(); renderProd(); renderWl();
       if (API_URL) {
         setSyncStatus('loading','저장 중...');
