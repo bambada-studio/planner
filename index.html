@@ -347,10 +347,12 @@ function renderCal() {
     h += `<tr><td class="m-cell${isNow?' now':''}">${m}월</td>`;
     cats.forEach(cat => {
       const its = calItems.filter(i => i.month === m && i.cat === cat).sort((a, b) => {
-        if (!a.date && !b.date) return 0;
-        if (!a.date) return 1;
-        if (!b.date) return -1;
-        return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+        const da = a.date ? new Date(a.date) : null;
+        const db = b.date ? new Date(b.date) : null;
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
       });
       h += `<td class="c-cell">`;
       its.forEach(it => h += `<div class="cal-row" onclick="showCalDetail(${it.id})"><span class="${chipClass(it)}">${it.title}</span><span class="cal-date">${fmtDate(it.date)}</span></div>`);
