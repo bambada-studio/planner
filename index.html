@@ -276,10 +276,10 @@ let activeTab = 'cal', modalMode = '', dpId = null, prodDpId = null;
 async function apiCall(params) {
   const action = params.action;
   if (action === 'getReleases' || action === 'getProduction' || action === 'getProd') {
-    const res = await fetch(API_URL + '?' + new URLSearchParams(params));
+    const res = await fetch(API_URL + '?' + new URLSearchParams(params), {redirect:'follow'});
     return res.json();
   } else {
-    const res = await fetch(API_URL, { method:'POST', body:JSON.stringify(params) });
+    const res = await fetch(API_URL, { method:'POST', body:JSON.stringify(params), redirect:'follow' });
     return res.json();
   }
 }
