@@ -249,21 +249,9 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
 </div>
 
 <script>
-const API_URL_KEY = 'planner_v2_api_url';
-let API_URL = localStorage.getItem(API_URL_KEY) || 'https://script.google.com/macros/s/AKfycbx5cYgSYTjsr27bKxMUTzO3c4GT7h3mzgwYadAORvQ9ITZFISjxu1b5FFuZy0wKq0q5/exec';
-if (API_URL) {
-  document.getElementById('setup-banner').style.display = 'none';
-  document.getElementById('api-url-input').value = API_URL;
-}
-
-function saveApiUrl() {
-  const v = document.getElementById('api-url-input').value.trim();
-  if (!v) return alert('URL을 입력해주세요');
-  API_URL = v;
-  localStorage.setItem(API_URL_KEY, v);
-  document.getElementById('setup-banner').style.display = 'none';
-  loadAll();
-}
+const API_URL = 'https://script.google.com/macros/s/AKfycbx5cYgSYTjsr27bKxMUTzO3c4GT7h3mzgwYadAORvQ9ITZFISjxu1b5FFuZy0wKq0q5/exec';
+document.getElementById('setup-banner').style.display = 'none';
+function saveApiUrl() {}
 
 function setSyncStatus(type, msg) {
   const el = document.getElementById('sync-status');
@@ -729,8 +717,7 @@ async function saveModal() {
 }
 
 // 초기 로드
-if (API_URL) loadAll();
-else { setSyncStatus('err','URL 미설정'); renderCal(); renderProd(); renderWl(); }
+loadAll();
 </script>
 </body>
 </html>
