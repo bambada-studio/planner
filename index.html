@@ -60,6 +60,10 @@ table.cal{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed}
 .chip-blue{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
 .chip-navy{background:#dce8f5;color:#042C53;border-color:#378ADD}
 .chip-purple{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.chip-mint{background:#E1F5EE;color:#085041;border-color:#1D9E75}
+.chip-pink{background:#FBEAF0;color:#72243E;border-color:#D4537E}
+.chip-gray{background:#F1EFE8;color:#444441;border-color:#888780}
+.chip-black{background:#2C2C2A;color:#ffffff;border-color:#1a1a1a}
 .cal-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 0;cursor:pointer;border-radius:4px}
 .cal-row:hover{opacity:.75}
 .cal-date{font-size:11px;color:#888;white-space:nowrap}
@@ -265,7 +269,7 @@ const CHIP_BASE = {record:'chip-record', release:'chip-release', delivery:'chip-
 const CATS = ['record','release','delivery','event'];
 const PROD_CATS = ['script','rec','review','media'];
 const PROD_CAT_LABEL = {script:'대본', rec:'편집', review:'검수', media:'마케팅'};
-const PROD_COLORS = {red:{bg:'#FCEBEB',border:'#F09595',text:'#791F1F'},orange:{bg:'#FAECE7',border:'#F0997B',text:'#712B13'},yellow:{bg:'#FAEEDA',border:'#FAC775',text:'#633806'},green:{bg:'#EAF3DE',border:'#97C459',text:'#27500A'},blue:{bg:'#E6F1FB',border:'#85B7EB',text:'#0C447C'},navy:{bg:'#dce8f5',border:'#378ADD',text:'#042C53'},purple:{bg:'#EEEDFE',border:'#AFA9EC',text:'#3C3489'}};
+const PROD_COLORS = {red:{bg:'#F7C1C1',border:'#A32D2D',text:'#501313'},orange:{bg:'#FDF0D5',border:'#D4880A',text:'#6B4200'},yellow:{bg:'#FFFBE8',border:'#D4B800',text:'#6B5E00'},green:{bg:'#EAF3DE',border:'#639922',text:'#27500A'},mint:{bg:'#E1F5EE',border:'#1D9E75',text:'#085041'},blue:{bg:'#E6F1FB',border:'#378ADD',text:'#0C447C'},navy:{bg:'#dce8f5',border:'#185FA5',text:'#042C53'},purple:{bg:'#EEEDFE',border:'#7F77DD',text:'#3C3489'},pink:{bg:'#FBEAF0',border:'#D4537E',text:'#72243E'},gray:{bg:'#F1EFE8',border:'#888780',text:'#444441'},black:{bg:'#2C2C2A',border:'#1a1a1a',text:'#ffffff'}};
 function getProdColor(style){return PROD_COLORS[style]||PROD_COLORS['blue'];}
 
 
@@ -392,7 +396,7 @@ function editCalItem() {
   const CATS_KR = {record:'녹음',release:'발표(커밍순)',delivery:'배송(스밍오픈)',event:'이벤트'};
   const catOpts = ['record','release','delivery','event'].map(c =>
     `<option value="${c}"${it.cat===c?' selected':''}>${CATS_KR[c]}</option>`).join('');
-  const colorOpts = [['','기본(카테고리색)'],['red','빨강'],['orange','주황'],['yellow','노랑'],['green','초록'],['blue','파랑'],['navy','남색'],['purple','보라']].map(([v,l]) =>
+  const colorOpts = [['','기본(카테고리색)'],['red','빨강'],['orange','주황'],['yellow','노랑'],['green','초록'],['mint','민트'],['blue','파랑'],['navy','남색'],['purple','보라'],['pink','핑크'],['gray','회색'],['black','검정']].map(([v,l]) =>
     `<option value="${v}"${it.style===v?' selected':''}>${l}</option>`).join('');
   modalMode = 'cal-edit'; dpId = editId;
   document.getElementById('modal-title').textContent = '일정 수정';
@@ -513,9 +517,13 @@ function editProdItem() {
       <option value="orange"${it.style==='orange'?' selected':''}>주황</option>
       <option value="yellow"${it.style==='yellow'?' selected':''}>노랑</option>
       <option value="green"${it.style==='green'?' selected':''}>초록</option>
+      <option value="mint"${it.style==='mint'?' selected':''}>민트</option>
       <option value="blue"${it.style==='blue'?' selected':''}>파랑</option>
       <option value="navy"${it.style==='navy'?' selected':''}>남색</option>
       <option value="purple"${it.style==='purple'?' selected':''}>보라</option>
+      <option value="pink"${it.style==='pink'?' selected':''}>핑크</option>
+      <option value="gray"${it.style==='gray'?' selected':''}>회색</option>
+      <option value="black"${it.style==='black'?' selected':''}>검정</option>
     </select></div>
     <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pef-note">${it.note||''}</textarea></div>`;
   closeProdDetail();
@@ -604,7 +612,9 @@ function showCalForm(m, cat) {
     <div class="fr"><label>날짜</label><input id="mf-date" type="date"></div>
     <div class="fr"><label>색상</label><select id="mf-style">
       <option value="red">빨강</option><option value="orange">주황</option><option value="yellow">노랑</option>
-      <option value="green">초록</option><option value="blue">파랑</option><option value="navy">남색</option><option value="purple">보라</option>
+      <option value="green">초록</option><option value="mint">민트</option><option value="blue">파랑</option>
+      <option value="navy">남색</option><option value="purple">보라</option><option value="pink">핑크</option>
+      <option value="gray">회색</option><option value="black">검정</option>
     </select></div>
     <div class="fr"><label>메모</label><input id="mf-memo" placeholder="선택사항"></div>`;
   openModal();
@@ -625,7 +635,9 @@ function showProdForm(m, cat) {
     </div>
     <div class="fr"><label>색상</label><select id="pf-style">
       <option value="red">빨강</option><option value="orange">주황</option><option value="yellow">노랑</option>
-      <option value="green">초록</option><option value="blue" selected>파랑</option><option value="navy">남색</option><option value="purple">보라</option>
+      <option value="green">초록</option><option value="mint">민트</option><option value="blue" selected>파랑</option>
+      <option value="navy">남색</option><option value="purple">보라</option><option value="pink">핑크</option>
+      <option value="gray">회색</option><option value="black">검정</option>
     </select></div>
     <div class="fr"><label>메모 (검수 내용 등)</label><textarea id="pf-note" placeholder="선택사항"></textarea></div>`;
   openModal();
