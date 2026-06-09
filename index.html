@@ -249,7 +249,7 @@ table.prod{border-collapse:collapse;width:100%;font-size:12px;table-layout:fixed
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbz55QESDXkBkb4NdIrvO_YIwNlbFVWZ218W6NrqU5LeaWn0AONN6YkffIbycXAgEuiZ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyTT4PE5b7OlDhRt6TgAsf4PC_TKFTlSR2ODrj26YUwiMB3wZ1EK_WEH4C6_n1547kO/exec';
 document.getElementById('setup-banner').style.display = 'none';
 function saveApiUrl() {}
 
@@ -274,14 +274,12 @@ let calYear = 2026, prodYear = 2026, wlYear = 2026, wlMonth = new Date().getMont
 let activeTab = 'cal', modalMode = '', dpId = null, prodDpId = null;
 
 async function apiCall(params) {
-  const action = params.action;
-  if (action === 'getReleases' || action === 'getProduction' || action === 'getProd') {
-    const res = await fetch(API_URL + '?' + new URLSearchParams(params), {redirect:'follow'});
-    return res.json();
-  } else {
-    const res = await fetch(API_URL, { method:'POST', body:JSON.stringify(params), redirect:'follow' });
-    return res.json();
-  }
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    redirect: 'follow'
+  });
+  return res.json();
 }
 
 async function loadAll() {
